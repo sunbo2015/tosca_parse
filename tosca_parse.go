@@ -10,7 +10,47 @@ import (
 	"github.com/owulveryck/toscaviewer"
 	"os"
 	"path/filepath"
+	
+	"gopkg.in/yaml.v2"
+	"archive/zip"
+	"golang.org/x/tools/godoc/vfs"
+	"golang.org/x/tools/godoc/vfs/zipfs"
 )
+
+func ParseVNFD(zipfile string, file string) error {
+
+	rc, err := zip.OpenReader(zipfile)
+	if err != nil {
+		return err
+	}
+	defer rc.Close()
+	fs := zipfs.New(rc, zipfile)
+	out, err := vfs.ReadFile(fs, file)
+	if err != nil {
+		return err
+	}
+	var m meta
+	err = yaml.Unmarshal(out, &m)
+	if err != nil {
+		return err
+	}
+	dirname := fmt.Sprintf("/%v", filepath.Dir(m.EntryDefinition))
+	base := filepath.Base(m.EntryDefinition)
+	ns := vfs.NameSpace{}
+	ns.Bind("/", fs, dirname, vfs.BindReplace)
+
+	// pass in a resolver that has the context of the virtual filespace
+	// of the archive file to handle resolving imports
+	return t.ParseSource(base, func(l string) ([]byte, error) {
+		var r []byte
+		rsc, err := ns.Open(l)
+		if err != nil {
+			return r, err
+		}
+		return ioutil.ReadAll(rsc)
+	}, ParserHooks{ParsedSTD: noop}) // TODO(kenjones): Add hooks as method parameter
+}
+
 
 func main() {
 
