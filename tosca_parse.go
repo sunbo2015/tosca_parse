@@ -7,7 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/owulveryck/toscalib"
-	"github.com/owulveryck/toscaviewer"
+// 	"github.com/owulveryck/toscaviewer"
 	"os"
 	"path/filepath"
 	
