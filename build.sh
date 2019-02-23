@@ -2,7 +2,6 @@
 
 set -eu
 
-VERSION="0.0.1.beta"
 GITCOMMIT=$(git rev-parse HEAD)
 BUILDTIME=$(date -u +%Y/%m/%d-%H:%M:%S)
 
