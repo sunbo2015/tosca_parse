@@ -1,0 +1,26 @@
+language: go
+sudo: required
+go:
+  - 1.11.x
+  
+env:
+  GO111MODULE=on
+  CGO_ENABLED=0
+
+addons:
+  apt:
+    update: true
+
+script:
+  chmod +x build.sh && ./build.sh
+
+after_success:
+deploy:
+  provider: releases
+  api_key: ${GH_TOKEN}
+  file_glob: true
+  file:
+    dist/torrentfs-*
+  skip_cleanup: true
+#   on:
+#     tags: true
