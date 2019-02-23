@@ -16,7 +16,7 @@ build() {
 	echo "$1 $2 ..."
 	GOOS=$1 GOARCH=$2 go build \
 		-ldflags "$LDFLAGS" \
-		-o dist/tosca_parse-${3:-""}
+		-o dist/${RELEASE}-${3:-""}
 }
 
 # go-bindata-assetfs -tags bindata res/...
