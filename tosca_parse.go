@@ -12,7 +12,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	
-	"gopkg.in/yaml.v2"
+	// "gopkg.in/yaml.v2"
 	"archive/zip"
 	"golang.org/x/tools/godoc/vfs"
 	"golang.org/x/tools/godoc/vfs/zipfs"
@@ -22,15 +22,11 @@ type toscaDefinition struct{
 	toscalib.ServiceTemplateDefinition
 }
 
-type ParserHooks struct {
-	ParsedSTD func(source string, std *ServiceTemplateDefinition) error
-}
-
-func noop(source string, std *ServiceTemplateDefinition) error {
+func noop(source string, std *toscalib.ServiceTemplateDefinition) error {
 	return nil
 }
 
-func (t *toscaDefinition) ParseVNFD(zipfile *string, plan *string) error {
+func (t *toscaDefinition) ParseVNFD(zipfile string, plan string) error {
 
 	rc, err := zip.OpenReader(zipfile)
 	if err != nil {
@@ -57,9 +53,8 @@ func (t *toscaDefinition) ParseVNFD(zipfile *string, plan *string) error {
 			return r, err
 		}
 		return ioutil.ReadAll(rsc)
-	}, ParserHooks{ParsedSTD: noop}) // TODO(kenjones): Add hooks as method parameter
+	}, toscalib.ParserHooks{ParsedSTD: noop}) // TODO(kenjones): Add hooks as method parameter
 }
-
 
 func main() {
 
@@ -81,7 +76,7 @@ func main() {
 	}
 
 	//err = yaml.Unmarshal(file, &toscaTemplate)
-	err = toscaTemplate.ParseVNFD(zipfile, plan)
+	err = toscaTemplate.ParseVNFD(*zipfile, *plan)
 	if err != nil {
 		log.Panic("error: ", err)
 	}
