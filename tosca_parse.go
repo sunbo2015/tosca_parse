@@ -17,7 +17,7 @@ import (
 	"golang.org/x/tools/godoc/vfs/zipfs"
 )
 
-func ParseVNFD(zipfile string, file string) error {
+func ParseVNFD(zipfile string, plan string) error {
 
 	rc, err := zip.OpenReader(zipfile)
 	if err != nil {
@@ -25,7 +25,7 @@ func ParseVNFD(zipfile string, file string) error {
 	}
 	defer rc.Close()
 	fs := zipfs.New(rc, zipfile)
-	out, err := vfs.ReadFile(fs, file)
+	out, err := vfs.ReadFile(fs, plan)
 	if err != nil {
 		return err
 	}
@@ -60,9 +60,9 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	example := fmt.Sprintf("%v/../examples/tosca_single_instance_wordpress.yaml", pwd)
-	example = filepath.Clean(example)
-	var testFile = flag.String("testfile", example, "a tosca yaml file to process")
+	
+	var zipfile = flag.String("zipfile", example, "a VNFD zip file to process")
+	var plan = flag.String("plan", example, "the plan file in VNFD zip")
 	flag.Parse()
 
 	var toscaTemplate toscalib.ServiceTemplateDefinition
