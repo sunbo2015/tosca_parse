@@ -12,7 +12,7 @@ then
 fi
 
 build() {
-	echo "$1 $2 ..."
+	echo "build ${RELEASE}-${3:-""} for $1 $2 ..."
 	GOOS=$1 GOARCH=$2 go build \
 		-ldflags "$LDFLAGS" \
 		-o dist/${RELEASE}-${3:-""}
