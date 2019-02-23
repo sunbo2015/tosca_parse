@@ -6,6 +6,8 @@ go:
 env:
   GO111MODULE=on
   CGO_ENABLED=0
+  VERSION=0.0.1.beta
+  RELEASE=tosca_parse
 
 cache:
   directories:
@@ -25,7 +27,7 @@ deploy:
   api_key: ${GH_TOKEN}
   file_glob: true
   file:
-    dist/tosca_parse-*
+    dist/${RELEASE}-*
   skip_cleanup: true
 #   on:
 #     tags: true
