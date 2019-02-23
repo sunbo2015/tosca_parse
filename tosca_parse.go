@@ -34,10 +34,6 @@ func (t *toscaDefinition) ParseVNFD(zipfile string, plan string) error {
 	}
 	defer rc.Close()
 	fs := zipfs.New(rc, zipfile)
-	out, err := vfs.ReadFile(fs, plan)
-	if err != nil {
-		return err
-	}
 
 	dirname := fmt.Sprintf("/%v", filepath.Dir(plan))
 	base := filepath.Base(plan)
@@ -57,23 +53,12 @@ func (t *toscaDefinition) ParseVNFD(zipfile string, plan string) error {
 }
 
 func main() {
-
-	// Fet the rooted path name of the current directory
-	pwd, err := os.Getwd()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 	
 	var zipfile = flag.String("zipfile", "", "a VNFD zip file to process")
 	var plan = flag.String("plan", "", "the plan file in VNFD zip")
 	flag.Parse()
 
 	var toscaTemplate toscaDefinition
-	file, err := os.Open(*zipfile)
-	if err != nil {
-		log.Panic("error: ", err)
-	}
 
 	//err = yaml.Unmarshal(file, &toscaTemplate)
 	err = toscaTemplate.ParseVNFD(*zipfile, *plan)
