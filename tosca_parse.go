@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"github.com/owulveryck/toscalib"
 	// "github.com/owulveryck/toscaviewer"
-	"os"
+	// "os"
 	"io/ioutil"
 	"path/filepath"
 	
@@ -61,7 +61,7 @@ func main() {
 	var toscaTemplate toscaDefinition
 
 	//err = yaml.Unmarshal(file, &toscaTemplate)
-	err = toscaTemplate.ParseVNFD(*zipfile, *plan)
+	err := toscaTemplate.ParseVNFD(*zipfile, *plan)
 	if err != nil {
 		log.Panic("error: ", err)
 	}
