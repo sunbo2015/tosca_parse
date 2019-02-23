@@ -17,7 +17,11 @@ import (
 	"golang.org/x/tools/godoc/vfs/zipfs"
 )
 
-func ParseVNFD(zipfile string, plan string) error {
+type toscaDefinition struct{
+	toscalib.ServiceTemplateDefinition
+}
+
+func (t *toscaDefinition) ParseVNFD(zipfile string, plan string) error {
 
 	rc, err := zip.OpenReader(zipfile)
 	if err != nil {
@@ -61,24 +65,24 @@ func main() {
 		os.Exit(1)
 	}
 	
-	var zipfile = flag.String("zipfile", example, "a VNFD zip file to process")
-	var plan = flag.String("plan", example, "the plan file in VNFD zip")
+	var zipfile = flag.String("zipfile", "", "a VNFD zip file to process")
+	var plan = flag.String("plan", "", "the plan file in VNFD zip")
 	flag.Parse()
 
-	var toscaTemplate toscalib.ServiceTemplateDefinition
-	file, err := os.Open(*testFile)
-
+	var toscaTemplate toscaDefinition
+	file, err := os.Open(*zipfile)
 	if err != nil {
 		log.Panic("error: ", err)
 	}
+
 	//err = yaml.Unmarshal(file, &toscaTemplate)
-	err = toscaTemplate.Parse(file)
+	err = toscaTemplate.ParseVNFD(zipfile, plan)
 	if err != nil {
 		log.Panic("error: ", err)
 	}
-	router := toscaviewer.NewRouter(&toscaTemplate)
+	// router := toscaviewer.NewRouter(&toscaTemplate)
 
-	log.Println("connect here: http://localhost:8080/svg")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	// log.Println("connect here: http://localhost:8080/svg")
+	// log.Fatal(http.ListenAndServe(":8080", router))
 
 }
