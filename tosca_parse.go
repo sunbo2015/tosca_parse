@@ -2,13 +2,14 @@ package main
 
 import (
 	"log"
-	"net/http"
+	// "net/http"
 
 	"flag"
 	"fmt"
 	"github.com/owulveryck/toscalib"
-// 	"github.com/owulveryck/toscaviewer"
+	// "github.com/owulveryck/toscaviewer"
 	"os"
+	"io/ioutil"
 	"path/filepath"
 	
 	"gopkg.in/yaml.v2"
@@ -21,7 +22,15 @@ type toscaDefinition struct{
 	toscalib.ServiceTemplateDefinition
 }
 
-func (t *toscaDefinition) ParseVNFD(zipfile string, plan string) error {
+type ParserHooks struct {
+	ParsedSTD func(source string, std *ServiceTemplateDefinition) error
+}
+
+func noop(source string, std *ServiceTemplateDefinition) error {
+	return nil
+}
+
+func (t *toscaDefinition) ParseVNFD(zipfile *string, plan *string) error {
 
 	rc, err := zip.OpenReader(zipfile)
 	if err != nil {
@@ -33,13 +42,9 @@ func (t *toscaDefinition) ParseVNFD(zipfile string, plan string) error {
 	if err != nil {
 		return err
 	}
-	var m meta
-	err = yaml.Unmarshal(out, &m)
-	if err != nil {
-		return err
-	}
-	dirname := fmt.Sprintf("/%v", filepath.Dir(m.EntryDefinition))
-	base := filepath.Base(m.EntryDefinition)
+
+	dirname := fmt.Sprintf("/%v", filepath.Dir(plan))
+	base := filepath.Base(plan)
 	ns := vfs.NameSpace{}
 	ns.Bind("/", fs, dirname, vfs.BindReplace)
 
