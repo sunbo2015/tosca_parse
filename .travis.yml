@@ -25,7 +25,7 @@ deploy:
   api_key: ${GH_TOKEN}
   file_glob: true
   file:
-    dist/torrentfs-*
+    dist/tosca_parse-*
   skip_cleanup: true
 #   on:
 #     tags: true
